@@ -75,7 +75,7 @@ class DictEdgeBuilder {
       const child = this.tree.lookup(node_id, offset, context.ch)
       if (child) {
         let pointer = this.pointers[j]
-        const [child_id, offset, is_final] = child
+        const [child_id, is_final, payload] = child
         pointer[0] = s
         pointer[1] = child_id
         pointer[2] = offset + 1
@@ -126,7 +126,8 @@ class PatEdgeBuilder {
 
     if (this.s) {
       if (this.ch_check(context.ch)) {
-        if (context.text.length == context.i || !this.ch_check(context.text[context.i + 1])) {
+        if (context.text.length == context.i ||
+            !this.ch_check(context.text[context.i + 1])) {
           this.e = context.i
         }
       } else {
@@ -223,7 +224,6 @@ exports.Tokenizer = class {
     let edge_builders = this.factories.map((factory) => factory());
     const path = build_path(edge_builders, text)
     const ranges = path_to_ranges(path)
-
     return ranges_to_tokens(text, ranges)
   }
 }

@@ -27,4 +27,10 @@ describe("Tokenizer", () => {
     expect(tokenizer.tokenize("กขABคง")).to.deep.equal(["กข","AB", "คง"])
   })
 
+  it("should be able to tokenize by overlap", () => {
+    const tree = new PrefixTree([["มา", true], ["ตา", true], ["มาตรา", true]])
+    const tokenizer = new Tokenizer(tree)
+    expect(tokenizer.tokenize("มาตรา")).to.deep.equal(["มาตรา"])
+  })
+
 })
