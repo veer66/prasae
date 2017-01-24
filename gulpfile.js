@@ -9,6 +9,4 @@ gulp.task("default", () =>
 
 gulp.task("test", () => 
           gulp.src('test/test_*.js', {read: false})
-          .pipe(mocha({
-            reporter: 'nyan'            
-          })))
+          .pipe(mocha({})))
