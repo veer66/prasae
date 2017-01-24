@@ -205,11 +205,17 @@ function punc_check(ch) {
   return ch == " "
 }
 
+function latin_check(ch) {
+  return (ch >= "A" && ch <= "Z") ||
+    (ch >= "a" && ch <= "z")
+}
+
 exports.Tokenizer = class {
   factories: Array<()=>EdgeBuilder>
   constructor(tree: PrefixTree) {
     this.factories = [() => new DictEdgeBuilder(tree),                      
                       () => new PatEdgeBuilder(punc_check, PUNC),
+                      () => new PatEdgeBuilder(latin_check, LATIN),
                       () => new UnkEdgeBuilder()]
   }
 

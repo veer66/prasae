@@ -21,4 +21,10 @@ describe("Tokenizer", () => {
     expect(tokenizer.tokenize("กข คง")).to.deep.equal(["กข"," ", "คง"])
   })
 
+  it("should be able to tokenize by latin alphabets", () => {
+    const tree = new PrefixTree([["กา", true], ["กาม", true]])
+    const tokenizer = new Tokenizer(tree)
+    expect(tokenizer.tokenize("กขABคง")).to.deep.equal(["กข","AB", "คง"])
+  })
+
 })
