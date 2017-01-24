@@ -15,4 +15,10 @@ describe("Tokenizer", () => {
     expect(tokenizer.tokenize("กามกา")).to.deep.equal(["กาม","กา"])
   })
 
+  it("should be able to tokenize by space", () => {
+    const tree = new PrefixTree([["กา", true], ["กาม", true]])
+    const tokenizer = new Tokenizer(tree)
+    expect(tokenizer.tokenize("กข คง")).to.deep.equal(["กข"," ", "คง"])
+  })
+
 })

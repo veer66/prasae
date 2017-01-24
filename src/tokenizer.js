@@ -105,6 +105,44 @@ class UnkEdgeBuilder {
   }
 }
 
+class PatEdgeBuilder {
+  ch_check: (string)=>boolean
+  s: ?number
+  e: ?number
+  edge_type: number
+  constructor(ch_check, edge_type) {
+    this.ch_check = ch_check
+    this.s = null
+    this.e = null
+    this.edge_type = edge_type
+  }
+  
+  build(context: EdgeBuildingContext): ?Edge {
+    if (this.s == null) {
+      if (this.ch_check(context.ch)) {
+        this.s = context.i
+      }
+    }
+
+    if (this.s) {
+      if (this.ch_check(context.ch)) {
+        if (context.text.length == context.i || !this.ch_check(context.text[context.i + 1])) {
+          this.e = context.i
+        }
+      } else {
+        this.s  = null
+      }
+    }
+
+    if (this.s && this.e) {
+      const source = context.path[this.s]
+      return [this.s, this.edge_type, source[EDGE_W] + 1, source[EDGE_UNK]]
+    } else {
+      return null
+    }
+  }
+}
+
 interface EdgeBuilder {
   build(EdgeBuildingContext): ?Edge
 }
@@ -126,7 +164,7 @@ function build_path(edge_builders, text) {
 
     if (context.best_edge == null) throw "best_edge cannot be null here"
 
-    if (context.best_edge.edge_type != UNK)
+    if (context.best_edge[EDGE_TYPE] != UNK)
       context.left_boundary = i + 1
 
     context.path[i + 1] = context.best_edge
@@ -163,10 +201,15 @@ function ranges_to_tokens(text, ranges) {
   return ranges.map((r) => r.substring(text))
 }
 
+function punc_check(ch) {
+  return ch == " "
+}
+
 exports.Tokenizer = class {
   factories: Array<()=>EdgeBuilder>
   constructor(tree: PrefixTree) {
-    this.factories = [() => new DictEdgeBuilder(tree),
+    this.factories = [() => new DictEdgeBuilder(tree),                      
+                      () => new PatEdgeBuilder(punc_check, PUNC),
                       () => new UnkEdgeBuilder()]
   }
 
